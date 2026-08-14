@@ -71,12 +71,12 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: "MHOB-KHMER - វេបសាយបញ្ជាទិញម្ហូបអាហារ",
       description: "ស្វែងរកម្ហូបអាហារដ៏ឈ្ងុយឆ្ងាញ់ និងបញ្ជាទិញយ៉ាងងាយស្រួល។",
-      images: ["/mhob-khmer.jpg"], // បានកែសម្រួលពី og-image.png មក mhob-khmer.jpg វិញ
+      images: ["/mhob-khmer.jpg"],
     },
     icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/apple-touch-icon.png",
+      icon: "/logo/logo.png",
+      shortcut: "/logo/logo.png",
+      apple: "/logo/logo.png",
     },
   };
 }
