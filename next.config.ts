@@ -12,9 +12,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "res.cloudinary.com", // បើអ្នកប្រើ Cloudinary តាម Scope គម្រោងរបស់អ្នក
+        hostname: "res.cloudinary.com",
       },
-      // អ្នកអាចបន្ថែម domain ផ្សេងទៀតនៅទីនេះបើចាំបាច់
     ],
   },
 };
