@@ -185,7 +185,6 @@ export default function EditCategoryPage({ params }: PageProps) {
                   src={form.image}
                   alt="Category visual preview"
                   onError={(e) => {
-                    // Hides the image element if the image path/URL fails to load
                     (e.target as HTMLElement).style.display = 'none';
                   }}
                   className="h-36 w-36 rounded-xl object-cover shadow-sm"
