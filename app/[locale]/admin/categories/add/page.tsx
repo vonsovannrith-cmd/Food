@@ -115,7 +115,7 @@ export default function AddCategoryPage() {
                 <ImageIcon size={18} />
               </span>
               <input
-                type="url"
+                type="text"
                 name="image"
                 value={form.image}
                 onChange={handleChange}
