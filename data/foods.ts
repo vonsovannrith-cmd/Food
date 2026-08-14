@@ -235,7 +235,7 @@ export const foods: Food[] = [
   {
     id: 18,
     name: "Mahcu Youn",
-    nameKm: "សម្លរ",
+    nameKm: "សម្លរ ម្ជូរយួន",
     image: "/foods/Machu Youn.jpg",
     category: "Samlor (Soups)",
     price: 3.25,
