@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String  @unique
+  password String
+  phone    String?
+  address  String?
+
+  role String @default("CUSTOMER")
+
+  status String @default("ACTIVE")
+
+  orders Order[]
+
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  image     String?
+  foods     Food[]
+  createdAt DateTime @default(now())
+}
+
+model Food {
+  id             Int      @id @default(autoincrement())
+  name           String // ឈ្មោះជាភាសាអង់គ្លេស
+  nameKm         String? // ឈ្មោះជាភាសាខ្មែរ (បន្ថែមថ្មី)
+  description    String?  @db.Text // ការពិពណ៌នាជាភាសាអង់គ្លេស
+  descriptionKm  String?  @db.Text // ការពិពណ៌នាជាភាសាខ្មែរ (បន្ថែមថ្មី)
+  image          String // រូបភាពទី ១ (រូបភាពមេ)
+  imageSecondary String? // រូបភាពទី ២ (ស្រេចចិត្ត)
+  imageTertiary  String? // រូបភាពទី ៣ (ស្រេចចិត្ត)
+  price          Float
+  stock          Int      @default(0)
+  rating         Float    @default(0)
+  categoryId     Int
+  category       Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  options    FoodOption[]
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt // កំណត់ @default(now()) ដើម្បីការពារ Error លើទិន្នន័យចាស់
+}
+
+model FoodOption {
+  id     Int    @id @default(autoincrement())
+  name   String
+  price  Float
+  foodId Int
+  food   Food   @relation(fields: [foodId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  total     Float
+  status    String      @default("PENDING")
+  note      String?
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     OrderItem[]
+  payment   Payment?
+  createdAt DateTime    @default(now())
+}
+
+model OrderItem {
+  id       Int   @id @default(autoincrement())
+  quantity Int
+  price    Float
+  orderId  Int
+  foodId   Int
+  order    Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  food     Food  @relation(fields: [foodId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id      Int    @id @default(autoincrement())
+  method  String
+  status  String @default("PENDING")
+  amount  Float
+  orderId Int    @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Setting {
+  id Int @id @default(autoincrement())
+
+  restaurant String
+
+  logo String?
+
+  phone String?
+
+  email String?
+
+  address String?
+
+  currency String @default("USD")
+
+  facebook String?
+
+  telegram String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
