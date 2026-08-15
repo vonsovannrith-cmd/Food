@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // យកទិន្នន័យ Order ទាំងអស់មកគណនា
+    // យក Orders ទាំងអស់មកគណនា
     const orders = await prisma.order.findMany({
       select: {
         total: true,
@@ -12,33 +12,29 @@ export async function GET() {
       },
     });
 
-    const daysMap: { [key: string]: number } = {
-      Mon: 0,
-      Tue: 0,
-      Wed: 0,
-      Thu: 0,
-      Fri: 0,
-      Sat: 0,
-      Sun: 0,
+    // កំណត់ខែទាំង ១២ ទុកជាមុន ឱ្យតម្លៃស្មើ 0
+    const monthsMap: { [key: string]: number } = {
+      Jan: 0, Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0,
+      Jul: 0, Aug: 0, Sep: 0, Oct: 0, Nov: 0, Dec: 0,
     };
 
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     orders.forEach((order) => {
-      // គណនាតែបញ្ជាទិញដែលមាន Status ជា PAID ឬ PENDING
-      if (order.status === "PAID" || order.status === "PENDING") {
+      // អ្នកអាចកែសម្រួល Status តាមតម្រូវការ (ឧទាហរណ៍៖ PAID, COMPLETED ឬ យកទាំងអស់)
+      if (order.status === "PAID" || order.status === "COMPLETED") {
         const date = new Date(order.createdAt);
-        const dayName = dayNames[date.getDay()];
-        if (daysMap[dayName] !== undefined) {
-          daysMap[dayName] += Number(order.total || 0);
+        const monthName = monthNames[date.getMonth()]; // ទាញយកឈ្មោះខែតាម createdAt
+        if (monthsMap[monthName] !== undefined) {
+          monthsMap[monthName] += Number(order.total || 0);
         }
       }
     });
 
-    // ប្តូរ Key ឱ្យត្រូវគ្នាជាមួយ XAxis dataKey="month" ឬ dataKey="date"
-    const formattedData = Object.keys(daysMap).map((day) => ({
-      month: day,
-      revenue: daysMap[day],
+    // แปลงទិន្នន័យឱ្យស្របតាម Chart Component
+    const formattedData = Object.keys(monthsMap).map((month) => ({
+      month: month,
+      revenue: monthsMap[month],
     }));
 
     return NextResponse.json({
