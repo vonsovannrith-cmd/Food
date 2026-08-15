@@ -3,34 +3,25 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // យក Orders ទាំងអស់ដែលមាន Status เป็น PAID
+    // កែសម្រួល៖ បើកឱ្យទាញយកគ្រប់ Status ដើម្បីតេស្តមើលទិន្នន័យ
     const orders = await prisma.order.findMany({
-      where: {
-        status: "PAID",
-      },
       select: {
         total: true,
         createdAt: true,
+        status: true,
       },
     });
 
-    // បង្កើត Mapping សម្រាប់ថ្ងៃក្នុងសប្តាហ៍
     const daysMap: { [key: string]: number } = {
-      Mon: 0,
-      Tue: 0,
-      Wed: 0,
-      Thu: 0,
-      Fri: 0,
-      Sat: 0,
-      Sun: 0,
+      Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0,
     };
-
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     orders.forEach((order) => {
-      const date = new Date(order.createdAt);
-      const dayName = dayNames[date.getDay()];
-      if (daysMap[dayName] !== undefined) {
+      // គណនាតែ orders ដែល PAID ឬ PENDING (តាមតម្រូវការរបស់អ្នក)
+      if (order.status === "PAID" || order.status === "PENDING") {
+        const date = new Date(order.createdAt);
+        const dayName = dayNames[date.getDay()];
         daysMap[dayName] += Number(order.total || 0);
       }
     });
@@ -40,15 +31,8 @@ export async function GET() {
       revenue: daysMap[day],
     }));
 
-    return NextResponse.json({
-      success: true,
-      data: formattedData,
-    });
+    return NextResponse.json({ success: true, data: formattedData });
   } catch (error) {
-    console.error("REVENUE_CHART_ERROR:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Error" }, { status: 500 });
   }
 }
