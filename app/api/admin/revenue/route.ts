@@ -35,8 +35,9 @@ export async function GET() {
       }
     });
 
+    // ប្តូរ Key ឱ្យត្រូវគ្នាជាមួយ XAxis dataKey="month" ឬ dataKey="date"
     const formattedData = Object.keys(daysMap).map((day) => ({
-      date: day,
+      month: day,
       revenue: daysMap[day],
     }));
 
