@@ -51,7 +51,7 @@ export default function FoodCard({ food }: FoodCardProps) {
             <Sparkles size={11} /> {t("sale")}
           </div>
         )}
-
+        
         {/* Favorite Button */}
         <button
           type="button"
